@@ -1,0 +1,34 @@
+# Ignore vendor directories
+/vendor/
+
+# Ignore build artifacts
+/build/
+/dist/
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore cache files
+/cache/
+
+# Ignore compiled files
+*.phpc
+*.htmlc
+*.cssc
+*.jsc
+
+# Ignore minified files
+*.min.js
+*.min.css
+
+# Ignore temporary files
+*.tmp
+
+# Ignore backup files
+*.bak
+*.swp
+*.swo
