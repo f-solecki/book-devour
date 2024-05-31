@@ -8,7 +8,7 @@ $path = parse_url($path, PHP_URL_PATH);
 
 
 // Home
-Router::get('', 'HomeController');
+Router::get('', 'BookController');
 Router::get('no_access', 'HomeController');
 Router::get('not_found', 'HomeController');
 
