@@ -4,7 +4,6 @@ class Book
 {
   public $id;
   public $title;
-
   public $authorId;
   public $genre;
   public $summary;
@@ -35,7 +34,7 @@ class Book
     return $this->authorId;
   }
 
-  public function getGenre()
+  public function getCategoryId()
   {
     return $this->genre;
   }
