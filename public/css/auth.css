@@ -1,0 +1,103 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 20px); /* 100vh minus the 10px padding from the body */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1{
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.logo > img { 
+  width: 100px;
+  height: 100px;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 300px;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.login-button,
+.register-button {
+  width: 320px;
+  padding: 15px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.login-button:hover,
+.register-button:hover {
+  background-color: #333;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.terms,
+.register-link,
+.login-link {
+  margin-top: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.terms a,
+.register-link a,
+.login-link a {
+  color: #2d8c2d;
+  text-decoration: none;
+}
+
+.terms a:hover,
+.register-link a:hover,
+.login-link a:hover {
+  text-decoration: underline;
+}

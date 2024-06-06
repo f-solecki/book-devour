@@ -5,40 +5,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="public/assets/favicon/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="public/css/app.css">
+  <link rel="stylesheet" type="text/css" href="public/css/auth.css">
   <title>BookDevour | Register</title>
 </head>
 
 <body>
-  <?php include_once __DIR__ . '/shared/simple-header.php' ?>
-
-  <div>
-    <div>
-      <div>
-        <p>Register</p>
-        <h1>Register to start using the app</h1>
-      </div>
+  <div class="wrapper">
+    <div class="container">
+      <div class="logo"><img src="public/assets/images/logo.jpg" alt="LOGO"></div>
+      <h1>Register to start using the app</h1>
 
       <form action="/register" method="POST">
-        <input type="text" id="firstName" name="firstName" required placeholder="First name" />
+        <div class="form-wrapper">
+          <input type="text" id="firstName" name="firstName" required placeholder="First name" />
+          <input type="text" id="lastName" name="lastName" required placeholder="Last name" />
+          <input type="email" id="email" name="email" required placeholder="Email" />
+          <input type="password" id="password" name="password" required placeholder="Password" />
+          <input type="password" id="repeatedPassword" name="repeatedPassword" required placeholder="Repeat password" />
+          <p class="terms">By pressing "Register" you agree to <a href="#">terms of service</a> and <a href="#">privacy policy</a>.</p>
 
-        <input type="text" id="lastName" name="lastName" required placeholder="Last name" />
+          <?php if (isset($errorMessage)) { ?>
+            <p class="error-message"><?php echo $errorMessage; ?></p>
+          <?php } ?>
 
-        <input type="email" id="email" name="email" required placeholder="Email" />
-
-        <input type="password" id="password" name="password" required placeholder="Password" />
-
-        <input type="password" id="repeatedPassword" name="repeatedPassword" required placeholder="Repeat password" />
-
-        <p>By pressing "Register" you agree to <a href="#">terms of service</a> and <a href="#">privacy policy</a>.</p>
-
-        <?php if (isset($errorMessage)) { ?>
-          <p><?php echo $errorMessage; ?></p>
-        <?php } ?>
-
-        <button type="submit">Register</button>
-
+          <button type="submit" class="register-button">Register</button>
+        </div>
       </form>
-      <a href="/login">Go to login</a>
+
+      <div class="login-link">Already have an account? <a href="/login">Login</a></div>
     </div>
   </div>
 </body>
