@@ -8,7 +8,7 @@ class LoanRepository extends Repository{
         $result = [];
 
         $query = $this->database->connect()->prepare('
-            SELECT * FROM loans WHERE user_id = :id
+            SELECT * FROM loans WHERE user_id = :id ORDER BY return_date ASC
         ');
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
@@ -28,12 +28,20 @@ class LoanRepository extends Repository{
     }
 
     public function loanBook($book_id, $user_id){
-        $query = $this->database->connect()->prepare('
-            INSERT INTO loans (book_id, user_id, loan_date, return_date)
-            VALUES (:book_id, :user_id, NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH))
-        ');
-        $query->bindParam(':book_id', $book_id, PDO::PARAM_INT);
-        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $query->execute();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $query = $this->database->connect()->prepare('
+                INSERT INTO loans (book_id, user_id, loan_date, return_date)
+                VALUES (:book_id, :user_id, NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH))
+            ');
+            $query->bindParam(':book_id', $book_id, PDO::PARAM_INT);
+            $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $query->execute();
+
+            if ($query->rowCount() > 0) {
+                return true; // Success
+            } else {
+                return false; // Failure
+            }
+        }
     }
 }

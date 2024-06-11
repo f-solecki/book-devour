@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="public/assets/favicon/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" type="text/css" href="public/css/app.css">
   <link rel="stylesheet" type="text/css" href="public/css/books.css">
   <title>Books</title>
@@ -21,15 +21,24 @@
         <a href="your_books.php">See all</a>
       </div>
       <div class="books-scrollable-list" id="loaned-books-list">
-        <?php 
-          foreach ($loans as $loan) :
-          $loanedBook = $books[$loan->getBookId()]; ?>
+        <?php
+        foreach ($loans as $loan) :
+          $loanedBook = $books[$loan->getBookId()];
+          $isLoanExpired = strtotime($loan->getReturnDate()) < time();
+        ?>
           <div class="book" data-book-id="<?= $loanedBook->getId() ?>">
             <img class="cover_photo_small" src="<?= htmlspecialchars($loanedBook->getCoverUrlPath()) ?>.jpg" alt="book cover">
             <div class="book-info">
-              <div class="title"><?= htmlspecialchars($loanedBook->getTitle()) ?></div>
+              <div class="book-header">
+                <div class="title"><?= htmlspecialchars($loanedBook->getTitle()) ?></div>
+                <a class="info-icon" href="book?id=<?= $loanedBook->getId() ?>"><i class="fa-solid fa-circle-info"></i></a>
+                </div>
               <p class="author-name"><?= htmlspecialchars($authors[$loanedBook->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$loanedBook->getAuthorId() - 1]->getLastName()) ?></p>
-              <p class="end-loan">Loan ends on: <?= htmlspecialchars($loan->getReturnDate()) ?></p>
+              <?php if ($isLoanExpired) : ?>
+                <p class="end-loan" style="color: red;">Loan ends on: <?= htmlspecialchars($loan->getReturnDate()) ?></p>
+              <?php else : ?>
+                <p class="end-loan" style="color: green;">Loan ends on: <?= htmlspecialchars($loan->getReturnDate()) ?></p>
+              <?php endif; ?>
               <button class="btn return-book" data-book-id="<?= $loanedBook->getId() ?>">Return book</button>
             </div>
           </div>
@@ -50,7 +59,7 @@
         });
 
         foreach ($booksWithoutLoans as $book) : ?>
-          <a class="book" data-book-id="<?= $book->getId() ?>"  >
+          <a class="book" href="book?id=<?= $loanedBook->getId() ?>">
             <img class="cover_photo_small" src="<?= htmlspecialchars($book->getCoverUrlPath()) ?>.jpg" alt="book cover">
             <div class="book-info">
               <div class="title"><?= htmlspecialchars($book->getTitle()) ?></div>
@@ -58,7 +67,7 @@
               <p class="category"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></p>
               <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
             </div>
-        </a>
+          </a>
         <?php endforeach; ?>
       </div>
     </div>
@@ -97,16 +106,25 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function(event) {
       const loanButtons = document.querySelectorAll('.loan-book');
       const returnButtons = document.querySelectorAll('.return-book');
       const profileIcon = document.getElementById('profile-icon');
       const dropdownMenu = document.getElementById('dropdown-menu');
 
+      document.querySelectorAll('.loan-book').forEach(button => {
+        button.addEventListener('click', function(event) {
+          event.preventDefault(); // Prevent the default anchor behavior
+          event.stopPropagation(); // Stop the click event from bubbling up to the <a> tag
+          loanBook(this.getAttribute('data-book-id'));
+        });
+      });
+
       loanButtons.forEach(button => {
         button.addEventListener('click', function() {
           const bookId = this.dataset.bookId;
-          loanBook(bookId);
+          const userId = <?= $userId ?>;
+          loanBook(bookId, userId);
         });
       });
 
@@ -128,24 +146,27 @@
       });
     });
 
-    function loanBook(bookId) {
+    function loanBook(bookId, userId) {
       // Simulate a loan action
       console.log(`Loaning book with ID: ${bookId}`);
-      // Remove the book from the recommended list and add to the loaned list
-      const bookElement = document.querySelector(`.book[data-book-id="${bookId}"]`);
-      const bookClone = bookElement.cloneNode(true);
-      bookElement.remove();
 
-      // Update the clone for the loaned list
-      const btn = bookClone.querySelector('.loan-book');
-      btn.classList.remove('loan-book');
-      btn.classList.add('return-book');
-      btn.innerText = 'Return book';
-      btn.addEventListener('click', function() {
-        returnBook(bookId);
+      fetch('/loan_book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bookId: bookId,
+          userId: userId
+        }),
+      }).then((response) => {
+        if (response.ok) {
+          closeModal(deleteModal);
+          location.reload();
+        } else {
+          alert("Error deleting exercise");
+        }
       });
-
-      document.getElementById('loaned-books-list').appendChild(bookClone);
     }
 
     function returnBook(bookId) {

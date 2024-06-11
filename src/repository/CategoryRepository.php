@@ -24,4 +24,24 @@ class CategoryRepository extends Repository
 
     return $result;
   }
+
+  public function getCategoryById($id)
+  {
+    $query = $this->database->connect()->prepare('
+      SELECT * FROM genre WHERE id = :id
+    ');
+    $query->bindParam(':id', $id, PDO::PARAM_INT);
+    $query->execute();
+
+    $category = $query->fetch(PDO::FETCH_ASSOC);
+
+    if (!$category) {
+      return null;
+    }
+
+    return new Category(
+      $category['id'],
+      $category['name'],
+    );
+  }
 }

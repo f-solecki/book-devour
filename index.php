@@ -19,4 +19,7 @@ Router::get('register', 'AuthController');
 Router::post('register', 'AuthController');
 Router::post('logout', 'AuthController');
 
+// Books
+Router::get('book', 'BookController');
+
 Router::run($path);

@@ -41,6 +41,21 @@ class BookController extends AppController
         return $this->render('books', ["books" => $books, "authors" => $authors, "loans" => $loans, "categories" => $categories, "recommendedBooks" => $recommendedBooks]);
     }
 
+    public function book()
+    {
+        if (!$this->isGet()) {
+            return;
+        }
+
+        $this->loginRequired();
+        $id = $_GET['id'];
+        $book = $this->bookRepository->getBookById($id);
+        $author = $this->authorRepository->getAuthorById($book->getAuthorId());
+        $category = $this->categoryRepository->getCategoryById($book->getCategoryId());
+
+        return $this->render('book', ['book' => $book, 'author' => $author, 'category' => $category]);
+    }
+
     public function delete_book()
     {
         if (!$this->isDelete() || !$this->getSession()->isLoggedIn()) {

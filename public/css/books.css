@@ -62,6 +62,11 @@
   overflow: hidden;
   display: flex;
   transition: .5s;
+  color: inherit
+}
+
+.book-header{
+  display: flex;
 }
 
 .book:hover{
