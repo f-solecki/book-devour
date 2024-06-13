@@ -10,7 +10,7 @@ class BookRepository extends Repository
     $result = [];
 
     $query = $this->database->connect()->prepare('
-      SELECT * FROM books
+      SELECT * FROM books ORDER BY id
     ');
     $query->execute();
     $books = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -28,7 +28,7 @@ class BookRepository extends Repository
 
     return $result;
   }
-
+  
   public function getBookById($id)
   {
     $query = $this->database->connect()->prepare('

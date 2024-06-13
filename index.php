@@ -9,8 +9,6 @@ $path = parse_url($path, PHP_URL_PATH);
 
 // Home
 Router::get('', 'BookController');
-Router::get('no_access', 'HomeController');
-Router::get('not_found', 'HomeController');
 
 // Auth
 Router::get('login', 'AuthController');
@@ -21,5 +19,7 @@ Router::post('logout', 'AuthController');
 
 // Books
 Router::get('book', 'BookController');
+Router::post('loan_book', 'BookController');
+Router::delete('return_book', 'BookController');
 
 Router::run($path);

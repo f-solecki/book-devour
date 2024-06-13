@@ -39,13 +39,6 @@ class Router
     $urlParts = explode("/", $url);
     $action = $urlParts[0];
 
-    if (!array_key_exists($action, self::$routes)) {
-      ob_start();
-      include 'public/views/not_found.php';
-      print ob_get_clean();
-      return;
-    }
-
     $controller = self::$routes[$action];
     $object = new $controller;
     $action = $action ?: 'index';

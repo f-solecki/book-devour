@@ -3,8 +3,10 @@
 require_once 'Repository.php';
 require_once __DIR__ . '/../models/Loan.php';
 
-class LoanRepository extends Repository{
-    public function getLoansByUserId($id){
+class LoanRepository extends Repository
+{
+    public function getLoansByUserId($id)
+    {
         $result = [];
 
         $query = $this->database->connect()->prepare('
@@ -27,21 +29,41 @@ class LoanRepository extends Repository{
         return $result;
     }
 
-    public function loanBook($book_id, $user_id){
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $query = $this->database->connect()->prepare('
-                INSERT INTO loans (book_id, user_id, loan_date, return_date)
-                VALUES (:book_id, :user_id, NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH))
-            ');
-            $query->bindParam(':book_id', $book_id, PDO::PARAM_INT);
-            $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-            $query->execute();
-
-            if ($query->rowCount() > 0) {
-                return true; // Success
-            } else {
-                return false; // Failure
-            }
-        }
+    public function loanBook($loan)
+    {
+        $query = $this->database->connect()->prepare('
+            INSERT INTO loans (book_id, user_id, loan_date, return_date)
+            VALUES (?, ?, ?, ?);
+        ');
+    
+        $query->execute([
+            $loan->getBookId(),
+            $loan->getUserId(),
+            $loan->getLoanDate(),
+            $loan->getReturnDate()
+        ]);
     }
+
+    public function isBookLoaned($bookId, $userId)
+    {
+        $query = $this->database->connect()->prepare('
+            SELECT * FROM loans WHERE book_id = :book_id AND user_id = :user_id
+        ');
+        $query->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+        $query->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $query->execute();
+
+        return $query->rowCount() > 0;
+    }
+
+    public function returnBook($bookId, $userId)
+    {
+        $query = $this->database->connect()->prepare('
+            DELETE FROM loans WHERE book_id = :book_id AND user_id = :user_id
+        ');
+        $query->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+        $query->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $query->execute();
+    }
+    
 }

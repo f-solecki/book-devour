@@ -67,11 +67,8 @@
 
 .book-header{
   display: flex;
-}
-
-.book:hover{
-  box-shadow: 0 0 10px 5px #4FC4B0;
-  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .book-info{
@@ -138,6 +135,7 @@
 .action-cell{
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .title-cell{
@@ -146,4 +144,6 @@
 
 }
 
-
+.info-icon{
+  cursor: pointer;
+}

@@ -15,62 +15,72 @@
   <?php include 'header.php'; ?>
 
   <div class="container">
-    <div class="books">
-      <div class="books-header">
-        <div class="books-title">Your books</div>
-        <a href="your_books.php">See all</a>
-      </div>
-      <div class="books-scrollable-list" id="loaned-books-list">
-        <?php
-        foreach ($loans as $loan) :
-          $loanedBook = $books[$loan->getBookId()];
-          $isLoanExpired = strtotime($loan->getReturnDate()) < time();
-        ?>
-          <div class="book" data-book-id="<?= $loanedBook->getId() ?>">
-            <img class="cover_photo_small" src="<?= htmlspecialchars($loanedBook->getCoverUrlPath()) ?>.jpg" alt="book cover">
-            <div class="book-info">
-              <div class="book-header">
-                <div class="title"><?= htmlspecialchars($loanedBook->getTitle()) ?></div>
-                <a class="info-icon" href="book?id=<?= $loanedBook->getId() ?>"><i class="fa-solid fa-circle-info"></i></a>
-                </div>
-              <p class="author-name"><?= htmlspecialchars($authors[$loanedBook->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$loanedBook->getAuthorId() - 1]->getLastName()) ?></p>
-              <?php if ($isLoanExpired) : ?>
-                <p class="end-loan" style="color: red;">Loan ends on: <?= htmlspecialchars($loan->getReturnDate()) ?></p>
-              <?php else : ?>
-                <p class="end-loan" style="color: green;">Loan ends on: <?= htmlspecialchars($loan->getReturnDate()) ?></p>
-              <?php endif; ?>
-              <button class="btn return-book" data-book-id="<?= $loanedBook->getId() ?>">Return book</button>
-            </div>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </div>
-    <div class="books">
-      <div class="books-title">Recommended for you</div>
-      <div class="books-scrollable-list" id="recommended-books-list">
-        <?php
-        $booksWithoutLoans = array_filter($recommendedBooks, function ($book) use ($loans) {
-          foreach ($loans as $loan) {
-            if ($loan->getBookId() === $book->getId()) {
-              return false;
-            }
-          }
-          return true;
-        });
+    <?php if (!empty($loans)) { ?>
 
-        foreach ($booksWithoutLoans as $book) : ?>
-          <a class="book" href="book?id=<?= $loanedBook->getId() ?>">
-            <img class="cover_photo_small" src="<?= htmlspecialchars($book->getCoverUrlPath()) ?>.jpg" alt="book cover">
-            <div class="book-info">
-              <div class="title"><?= htmlspecialchars($book->getTitle()) ?></div>
-              <p class="author-name"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></p>
-              <p class="category"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></p>
-              <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
+      <div class="books">
+        <div class="books-title">Your books</div>
+        <div class="books-scrollable-list" id="loaned-books-list">
+          <?php
+          foreach ($loans as $loan) :
+            $loanedBook = $books[$loan->getBookId() - 1];
+            $isLoanExpired = strtotime($loan->getReturnDate()) < time();
+          ?>
+            <div class="book" data-book-id="<?= $loanedBook->getId() ?>">
+              <img class="cover_photo_small" src="<?= htmlspecialchars($loanedBook->getCoverUrlPath()) ?>.jpg" alt="book cover">
+              <div class="book-info">
+                <div class="book-header">
+                  <div class="title"><?= htmlspecialchars($loanedBook->getTitle()) ?></div>
+                  <a class="info-icon" href="book?id=<?= $loanedBook->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
+                </div>
+                <p class="author-name"><?= htmlspecialchars($authors[$loanedBook->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$loanedBook->getAuthorId() - 1]->getLastName()) ?></p>
+                <?php if ($isLoanExpired) : ?>
+                  <p class="end-loan" style="color: red;">Loan ends on: <?= htmlspecialchars($loan->getReturnDate()) ?></p>
+                <?php else : ?>
+                  <p class="end-loan" style="color: green;">Loan ends on: <?= htmlspecialchars($loan->getReturnDate()) ?></p>
+                <?php endif; ?>
+                <button class="btn return-book" data-book-id="<?= $loanedBook->getId() ?>">Return book</button>
+              </div>
             </div>
-          </a>
-        <?php endforeach; ?>
+          <?php endforeach; ?>
+        </div>
       </div>
-    </div>
+    <?php } ?>
+
+
+    <?php
+    if (!empty($recommendedBooks)) { ?>
+      <div class='books'>
+        <div class='books-title'>Recommended for you</div>
+        <div class='books-scrollable-list' id='recommended-books-list'>
+
+          <?php
+          $booksWithoutLoans = array_filter($recommendedBooks, function ($book) use ($loans) {
+            foreach ($loans as $loan) {
+              if ($loan->getBookId() === $book->getId()) {
+                return false;
+              }
+            }
+            return true;
+          });
+
+          foreach ($booksWithoutLoans as $book) : ?>
+            <div class="book" data-book-id="<?= $book->getId() ?>">
+              <img class="cover_photo_small" src="<?= htmlspecialchars($book->getCoverUrlPath()) ?>.jpg" alt="book cover">
+              <div class="book-info">
+                <div class="book-header">
+                  <div class="title"><?= htmlspecialchars($book->getId()) ?></div>
+                  <a class="info-icon" href="book?id=<?= $book->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
+                </div>
+                <p class="author-name"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></p>
+                <p class="category"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></p>
+                <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
+              </div>
+            </div>
+          <?php endforeach; ?>
+
+        </div>
+      </div>
+    <?php } ?>
 
     <div class="books">
       <div class="books-title">All books</div>
@@ -97,7 +107,9 @@
             <td class="list-cell"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></td>
             <td class="list-cell"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></td>
             <td class="action-cell">
-              <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
+              <button class="btn loan-book" style="margin-right:10px" data-book-id="<?= $book->getId() ?>">Loan book</button>
+              <a class="info-icon" href="book?id=<?= $book->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
+
             </td>
           </tr>
         <?php endforeach; ?>
@@ -112,19 +124,9 @@
       const profileIcon = document.getElementById('profile-icon');
       const dropdownMenu = document.getElementById('dropdown-menu');
 
-      document.querySelectorAll('.loan-book').forEach(button => {
-        button.addEventListener('click', function(event) {
-          event.preventDefault(); // Prevent the default anchor behavior
-          event.stopPropagation(); // Stop the click event from bubbling up to the <a> tag
-          loanBook(this.getAttribute('data-book-id'));
-        });
-      });
-
       loanButtons.forEach(button => {
         button.addEventListener('click', function() {
-          const bookId = this.dataset.bookId;
-          const userId = <?= $userId ?>;
-          loanBook(bookId, userId);
+          loanBook(this.dataset.bookId);
         });
       });
 
@@ -146,47 +148,43 @@
       });
     });
 
-    function loanBook(bookId, userId) {
-      // Simulate a loan action
-      console.log(`Loaning book with ID: ${bookId}`);
-
+    function loanBook(bookId) {
       fetch('/loan_book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          bookId: bookId,
-          userId: userId
+          book_id: bookId,
         }),
       }).then((response) => {
         if (response.ok) {
-          closeModal(deleteModal);
-          location.reload();
+          console.log('Book loaned successfully');
+          location.reload(); // Reload the page to reflect changes
         } else {
-          alert("Error deleting exercise");
+          alert("Error loaning the book. Please try again.");
         }
       });
     }
 
+
     function returnBook(bookId) {
-      // Simulate a return action
-      console.log(`Returning book with ID: ${bookId}`);
-      // Remove the book from the loaned list and add to the recommended list
-      const bookElement = document.querySelector(`.book[data-book-id="${bookId}"]`);
-      const bookClone = bookElement.cloneNode(true);
-      bookElement.remove();
-
-      // Update the clone for the recommended list
-      const btn = bookClone.querySelector('.return-book');
-      btn.classList.remove('return-book');
-      btn.classList.add('loan-book');
-      btn.innerText = 'Loan book';
-      btn.addEventListener('click', function() {
-        loanBook(bookId);
+      fetch('/return_book', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          book_id: bookId,
+        }),
+      }).then((response) => {
+        if (response.ok) {
+          console.log('Book returned successfully');
+          location.reload(); // Reload the page to reflect changes
+        } else {
+          alert("Error returning the book. Please try again.");
+        }
       });
-
-      document.getElementById('recommended-books-list').appendChild(bookClone);
     }
   </script>
 </body>

@@ -76,7 +76,7 @@ class AppController
     $templatePath = 'public/views/' . $template . '.php';
 
     if (!file_exists($templatePath)) {
-      $templatePath = 'public/views/not_found.php';
+      $templatePath = 'public/views/books.php';
     }
 
     extract($variables);

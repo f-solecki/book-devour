@@ -31,7 +31,6 @@ class BookController extends AppController
 
         $this->loginRequired();
         $userId = $this->getSession()->getUserId();
-        require_once __DIR__ . '/../repository/BookRepository.php';
 
         $books = $this->bookRepository->getBooks();
         $authors = $this->authorRepository->getAuthors();
@@ -55,6 +54,62 @@ class BookController extends AppController
 
         return $this->render('book', ['book' => $book, 'author' => $author, 'category' => $category]);
     }
+
+
+    public function loan_book()
+    {
+        if (!$this->isPost() || !$this->getSession()->isLoggedIn()) {
+            http_response_code(401);
+            return;
+        }
+        $userId = $this->getSession()->getUserId();
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['book_id'])) {
+            http_response_code(404);
+            return;
+        }
+
+        if ($this->loansRepository->isBookLoaned($data['book_id'], $userId)) {
+            http_response_code(409);
+            return;
+        }
+
+        $loan = new Loan(
+            null,
+            $data['book_id'],
+            $userId,
+            date('Y-m-d'),
+            date('Y-m-d', strtotime('+1 month'))
+        );
+
+        $this->loansRepository->loanBook($loan);
+        http_response_code(200);
+    }
+
+    public function return_book()
+    {
+        if (!$this->isDelete() || !$this->getSession()->isLoggedIn()) {
+            http_response_code(401);
+            return;
+        }
+        $userId = $this->getSession()->getUserId();
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['book_id'])) {
+            http_response_code(404);
+            return;
+        }
+
+        if (!$this->loansRepository->isBookLoaned($data['book_id'], $userId)) {
+            http_response_code(409);
+            return;
+        }
+
+        $this->loansRepository->returnBook($data['book_id'], $userId);
+        http_response_code(200);
+    }
+
 
     public function delete_book()
     {
