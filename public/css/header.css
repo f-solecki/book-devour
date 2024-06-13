@@ -25,6 +25,17 @@
   cursor: pointer;
 }
 
+.is-admin{
+  color: #333;
+  margin-right: 10px;
+}
+
+.right-side{
+  display: flex;
+  align-items: center;
+
+}
+
 .dropdown-menu {
   display: none;
   position: absolute;

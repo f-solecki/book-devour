@@ -6,7 +6,7 @@ require_once 'src/controllers/BookController.php';
 
 class Router
 {
-  public static $routes;
+  public static $routes = [];
 
   public static function get($url, $view)
   {
@@ -35,9 +35,13 @@ class Router
 
   public static function run($url)
   {
-
     $urlParts = explode("/", $url);
     $action = $urlParts[0];
+
+    if (!isset(self::$routes[$action])) {
+      header("Location: /");
+      exit();
+    }
 
     $controller = self::$routes[$action];
     $object = new $controller;

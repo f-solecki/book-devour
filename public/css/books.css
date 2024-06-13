@@ -5,23 +5,23 @@
   overflow: auto;
 }
 
-.books{
-  background-color: #C8E6E1;
-  padding: 5px 10px ;
-  margin-bottom:20px;
+.books {
+  background-color: #c8e6e1;
+  padding: 5px 10px;
+  margin-bottom: 20px;
   border-radius: 10px;
 }
 
-.books-header{
+.books-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.books-header a{
+.books-header a {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #4FC4B0;
+  color: #4fc4b0;
   text-decoration: none;
 }
 
@@ -32,22 +32,22 @@
 
 /* background of the scrollbar except button or resizer */
 .books-scrollable-list::-webkit-scrollbar-track {
-  background-color: #C8E6E1;
+  background-color: #c8e6e1;
 }
 
 /* scrollbar itself */
 .books-scrollable-list::-webkit-scrollbar-thumb {
   background-color: #babac0;
   border-radius: 16px;
-  border: 4px solid #C8E6E1;
+  border: 4px solid #c8e6e1;
 }
 
 /* set button(top and bottom of the scrollbar) */
 .books-scrollable-list::-webkit-scrollbar-button {
-  display:none;
+  display: none;
 }
 
-.books-title{
+.books-title {
   font-size: 2.4rem;
   font-weight: bold;
   margin: 20px 0;
@@ -56,22 +56,22 @@
 .book {
   width: 400px;
   min-width: 400px;
-  margin:15px;
-  background-color: #4FC4B0;
+  margin: 15px;
+  background-color: #4fc4b0;
   border-radius: 10px;
   overflow: hidden;
   display: flex;
-  transition: .5s;
-  color: inherit
+  transition: 0.5s;
+  color: inherit;
 }
 
-.book-header{
+.book-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.book-info{
+.book-info {
   width: 250px;
   padding: 10px;
   display: flex;
@@ -79,71 +79,76 @@
   justify-content: space-between;
 }
 
-
-.title{
+.title {
   font-size: 2.2rem;
   font-weight: bold;
 }
 
-.author-name{
+.author-name {
   font-size: 1.8rem;
   font-weight: bold;
 }
 
-.end-loan{
+.end-loan {
   font-size: 1.6rem;
 }
-.category{
+.category {
   font-size: 1.6rem;
 }
 
-.cover_photo_small{
+.cover_photo_small {
   width: 150px;
   height: 200px;
 }
 
-.books-table{
+.books-table {
   min-width: 100%;
 }
 
-.list-row:nth-child(odd){
+.list-row:nth-child(odd) {
   background-color: #f4f4f4;
 }
 
-.list-row:nth-child(even){
+.list-row:nth-child(even) {
   background-color: #e4e4e4;
 }
 
-.list-row td{
+.list-row td {
   padding: 10px;
 }
 
-.list-cell{
+.list-cell {
   padding: 10px;
   align-self: center;
 }
 
-.list-header{
+.list-header {
   font-size: 1.8rem;
   font-weight: bold;
   padding: 10px;
-  background-color: #4FC4B0;
+  background-color: #4fc4b0;
   color: white;
   text-align: left;
 }
 
-.action-cell{
+.action-cell {
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
 
-.title-cell{
+.title-cell {
   font-size: 1.8rem;
   font-weight: bold;
-
 }
 
-.info-icon{
+.info-icon {
+  cursor: pointer;
+}
+
+.delete-btn {
+  border: none;
+  margin-left: 10px;
+  background-color: inherit;
   cursor: pointer;
 }

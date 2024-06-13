@@ -95,7 +95,7 @@ class BookRepository extends Repository
   }
 
 
-  public function removeBook($id)
+  public function deleteBook($id)
   {
     $query = $this->database->connect()->prepare('
     DELETE FROM books WHERE id = :id

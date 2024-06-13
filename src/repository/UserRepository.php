@@ -23,6 +23,19 @@ class UserRepository extends Repository
     return new User($user['id'], $user['first_name'], $user['last_name'], $user['email'], $user['password'], $user['created_at'], $user['is_admin']);
   }
 
+  public function isUserAdmin($id)
+  {
+    $query = $this->database->connect()->prepare('
+    SELECT is_admin FROM users WHERE id = :id
+  ');
+    $query->bindParam(':id', $id, PDO::PARAM_STR);
+    $query->execute();
+
+    $user = $query->fetch(PDO::FETCH_ASSOC);
+
+    return $user["is_admin"];
+  }
+
   public function createUser($data)
   {
     $query = $this->database->connect()->prepare('

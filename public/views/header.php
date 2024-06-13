@@ -11,19 +11,30 @@
 <body>
   <header class="header">
     <div class="logo">
-      <img src="public/assets/images/logo.jpg" alt="Logo">
+      <a href="/">
+        <img src="public/assets/images/logo.jpg" alt="Logo">
+      </a>
     </div>
-    <div class="profile">
-      <i class="fas fa-user profile-icon" id="profile-icon"></i>
-      <div class="dropdown-menu" id="dropdown-menu">
-        <form action="/logout" method="POST" class="logout-form">
-          <button type="submit" class="logout-button text-xl">
-            Logout
-          </button>
-        </form>
+    <div class="right-side">
+      <?php if ($isAdmin) : ?>
+        <div class="is-admin">
+          Admin
+        </div>
+      <?php endif; ?>
+      <div class="profile">
+        <i class="fas fa-user profile-icon" id="profile-icon"></i>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <form action="/logout" method="POST" class="logout-form">
+            <button type="submit" class="logout-button text-xl">
+              Logout
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </header>
+
+  <script src="public/js/header.js"></script>
 </body>
 
 </html>

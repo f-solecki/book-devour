@@ -5,6 +5,7 @@ require_once __DIR__ . '/../repository/BookRepository.php';
 require_once __DIR__ . '/../repository/AuthorRepository.php';
 require_once __DIR__ . '/../repository/LoanRepository.php';
 require_once __DIR__ . '/../repository/CategoryRepository.php';
+require_once __DIR__ . '/../repository/UserRepository.php';
 
 class BookController extends AppController
 {
@@ -12,6 +13,7 @@ class BookController extends AppController
     private $authorRepository;
     private $loansRepository;
     private $categoryRepository;
+    private $userRepository;
 
     public function __construct()
     {
@@ -20,6 +22,7 @@ class BookController extends AppController
         $this->authorRepository = new AuthorRepository();
         $this->loansRepository = new LoanRepository();
         $this->categoryRepository = new CategoryRepository();
+        $this->userRepository = new UserRepository();
     }
 
 
@@ -30,14 +33,16 @@ class BookController extends AppController
         }
 
         $this->loginRequired();
-        $userId = $this->getSession()->getUserId();
 
+        $userId = $this->getSession()->getUserId();
+        $isAdmin = $this->userRepository->isUserAdmin($userId);
         $books = $this->bookRepository->getBooks();
         $authors = $this->authorRepository->getAuthors();
         $loans = $this->loansRepository->getLoansByUserId($userId);
+        $allLoans = $this->loansRepository->getLoanedBooks();
         $categories = $this->categoryRepository->getCategories();
         $recommendedBooks = $this->bookRepository->getRecommendedUserBooks($userId);
-        return $this->render('books', ["books" => $books, "authors" => $authors, "loans" => $loans, "categories" => $categories, "recommendedBooks" => $recommendedBooks]);
+        return $this->render('books', ["isAdmin" => $isAdmin, "books" => $books, "authors" => $authors, "loans" => $loans, "allLoans" => $allLoans, "categories" => $categories, "recommendedBooks" => $recommendedBooks]);
     }
 
     public function book()
@@ -48,11 +53,14 @@ class BookController extends AppController
 
         $this->loginRequired();
         $id = $_GET['id'];
+        $userId = $this->getSession()->getUserId();
+        $isAdmin = $this->userRepository->isUserAdmin($userId);
         $book = $this->bookRepository->getBookById($id);
         $author = $this->authorRepository->getAuthorById($book->getAuthorId());
         $category = $this->categoryRepository->getCategoryById($book->getCategoryId());
+        $loans = $this->loansRepository->getLoanedBooks();
 
-        return $this->render('book', ['book' => $book, 'author' => $author, 'category' => $category]);
+        return $this->render('book', ["isAdmin" => $isAdmin, 'book' => $book, 'author' => $author, 'category' => $category, 'loans' => $loans]);
     }
 
 
@@ -113,10 +121,21 @@ class BookController extends AppController
 
     public function delete_book()
     {
-        if (!$this->isDelete() || !$this->getSession()->isLoggedIn()) {
+        $userId = $this->getSession()->getUserId();
+
+        if (!$this->isDelete() || !$this->getSession()->isLoggedIn() || !$this->userRepository->isUserAdmin($userId)) {
+            http_response_code(401);
             return;
         }
 
-        // TODO: Implement
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['book_id'])) {
+            http_response_code(404);
+            return;
+        }
+
+        $this->bookRepository->deleteBook($data['book_id']);
+        http_response_code(200);
     }
 }

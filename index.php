@@ -21,5 +21,6 @@ Router::post('logout', 'AuthController');
 Router::get('book', 'BookController');
 Router::post('loan_book', 'BookController');
 Router::delete('return_book', 'BookController');
+Router::delete('delete_book', 'BookController');
 
 Router::run($path);

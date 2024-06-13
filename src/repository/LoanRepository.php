@@ -2,6 +2,7 @@
 
 require_once 'Repository.php';
 require_once __DIR__ . '/../models/Loan.php';
+require_once __DIR__ . '/../models/LoanedBook.php';
 
 class LoanRepository extends Repository
 {
@@ -10,9 +11,46 @@ class LoanRepository extends Repository
         $result = [];
 
         $query = $this->database->connect()->prepare('
-            SELECT * FROM loans WHERE user_id = :id ORDER BY return_date ASC
-        ');
+        SELECT DISTINCT
+        b.id AS book_id,
+        b.title AS book_title,
+        b.summary AS book_summary,
+        b.cover_url AS book_cover_url,
+        b.author_id AS author_id,
+        b.genre AS genre_id,
+        l.return_date AS return_date
+      FROM
+        public.loans l
+      JOIN
+        public.books b ON l.book_id = b.id
+            WHERE user_id = :id 
+            ORDER BY return_date ASC');
         $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+        $books = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($books as $book) {
+            $result[] = new LoanedBook(
+                $book['book_id'],
+                $book['book_title'],
+                $book['author_id'],
+                $book['genre_id'],
+                $book['book_summary'],
+                $book['book_cover_url'],
+                $book['return_date']
+            );
+        }
+
+        return $result;
+    }
+
+    public function getLoanedBooks()
+    {
+        $result = [];
+
+        $query = $this->database->connect()->prepare('
+            SELECT * FROM loans
+        ');
         $query->execute();
         $loans = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -35,7 +73,7 @@ class LoanRepository extends Repository
             INSERT INTO loans (book_id, user_id, loan_date, return_date)
             VALUES (?, ?, ?, ?);
         ');
-    
+
         $query->execute([
             $loan->getBookId(),
             $loan->getUserId(),
@@ -65,5 +103,4 @@ class LoanRepository extends Repository
         $query->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $query->execute();
     }
-    
 }

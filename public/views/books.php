@@ -12,7 +12,9 @@
 </head>
 
 <body>
-  <?php include 'header.php'; ?>
+  <?php
+  $isAdmin = $isAdmin;
+  include 'header.php'; ?>
 
   <div class="container">
     <?php if (!empty($loans)) { ?>
@@ -22,7 +24,7 @@
         <div class="books-scrollable-list" id="loaned-books-list">
           <?php
           foreach ($loans as $loan) :
-            $loanedBook = $books[$loan->getBookId() - 1];
+            $loanedBook = $loan;
             $isLoanExpired = strtotime($loan->getReturnDate()) < time();
           ?>
             <div class="book" data-book-id="<?= $loanedBook->getId() ?>">
@@ -48,42 +50,45 @@
 
 
     <?php
-    if (!empty($recommendedBooks)) { ?>
-      <div class='books'>
-        <div class='books-title'>Recommended for you</div>
-        <div class='books-scrollable-list' id='recommended-books-list'>
+    if (!empty($recommendedBooks)) {
+      $booksWithoutLoans = array_filter($recommendedBooks, function ($book) use ($allLoans) {
+        foreach ($allLoans as $loan) {
+          if ($loan->getBookId() === $book->getId()) {
+            return false;
+          }
+        }
+        return true;
+      });
 
-          <?php
-          $booksWithoutLoans = array_filter($recommendedBooks, function ($book) use ($loans) {
-            foreach ($loans as $loan) {
-              if ($loan->getBookId() === $book->getId()) {
-                return false;
-              }
-            }
-            return true;
-          });
+      if (!empty($booksWithoutLoans)) : ?>
+        <div class='books'>
+          <div class='books-title'>Recommended for you</div>
+          <div class='books-scrollable-list' id='recommended-books-list'>
 
-          foreach ($booksWithoutLoans as $book) : ?>
-            <div class="book" data-book-id="<?= $book->getId() ?>">
-              <img class="cover_photo_small" src="<?= htmlspecialchars($book->getCoverUrlPath()) ?>.jpg" alt="book cover">
-              <div class="book-info">
-                <div class="book-header">
-                  <div class="title"><?= htmlspecialchars($book->getId()) ?></div>
-                  <a class="info-icon" href="book?id=<?= $book->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
+
+            <?php
+            foreach ($booksWithoutLoans as $book) : ?>
+              <div class="book" data-book-id="<?= $book->getId() ?>">
+                <img class="cover_photo_small" src="<?= htmlspecialchars($book->getCoverUrlPath()) ?>.jpg" alt="book cover">
+                <div class="book-info">
+                  <div class="book-header">
+                    <div class="title"><?= htmlspecialchars($book->getTitle()) ?></div>
+                    <a class="info-icon" href="book?id=<?= $book->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
+                  </div>
+                  <p class="author-name"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></p>
+                  <p class="category"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></p>
+                  <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
                 </div>
-                <p class="author-name"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></p>
-                <p class="category"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></p>
-                <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
               </div>
-            </div>
-          <?php endforeach; ?>
+            <?php endforeach; ?>
 
+          </div>
         </div>
-      </div>
+      <?php endif; ?>
     <?php } ?>
 
     <div class="books">
-      <div class="books-title">All books</div>
+      <div class="books-title">All available books</div>
       <table class="books-table" cellspacing="0" cellpadding="0">
         <tr class="list-row">
           <th class="list-header">Title</th>
@@ -92,8 +97,8 @@
           <th class="list-header"></th>
         </tr>
         <?php
-        $booksWithoutLoans = array_filter($books, function ($book) use ($loans) {
-          foreach ($loans as $loan) {
+        $booksWithoutLoans = array_filter($books, function ($book) use ($allLoans) {
+          foreach ($allLoans as $loan) {
             if ($loan->getBookId() === $book->getId()) {
               return false;
             }
@@ -107,9 +112,11 @@
             <td class="list-cell"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></td>
             <td class="list-cell"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></td>
             <td class="action-cell">
-              <button class="btn loan-book" style="margin-right:10px" data-book-id="<?= $book->getId() ?>">Loan book</button>
-              <a class="info-icon" href="book?id=<?= $book->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
-
+              <a class="info-icon" style="margin-right:10px" href="book?id=<?= $book->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
+              <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
+              <?php if ($isAdmin) : ?>
+                <button class="delete-btn" data-book-id="<?= $book->getId() ?>"><img class="delete-icon" src="public/assets/images/trash.svg" alt="delete" /></button>
+              <?php endif; ?>
             </td>
           </tr>
         <?php endforeach; ?>
@@ -117,76 +124,7 @@
     </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function(event) {
-      const loanButtons = document.querySelectorAll('.loan-book');
-      const returnButtons = document.querySelectorAll('.return-book');
-      const profileIcon = document.getElementById('profile-icon');
-      const dropdownMenu = document.getElementById('dropdown-menu');
-
-      loanButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          loanBook(this.dataset.bookId);
-        });
-      });
-
-      returnButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const bookId = this.dataset.bookId;
-          returnBook(bookId);
-        });
-      });
-
-      profileIcon.addEventListener('click', function() {
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-      });
-
-      document.addEventListener('click', function(event) {
-        if (!profileIcon.contains(event.target) && !dropdownMenu.contains(event.target)) {
-          dropdownMenu.style.display = 'none';
-        }
-      });
-    });
-
-    function loanBook(bookId) {
-      fetch('/loan_book', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          book_id: bookId,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          console.log('Book loaned successfully');
-          location.reload(); // Reload the page to reflect changes
-        } else {
-          alert("Error loaning the book. Please try again.");
-        }
-      });
-    }
-
-
-    function returnBook(bookId) {
-      fetch('/return_book', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          book_id: bookId,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          console.log('Book returned successfully');
-          location.reload(); // Reload the page to reflect changes
-        } else {
-          alert("Error returning the book. Please try again.");
-        }
-      });
-    }
-  </script>
+  <script src="public/js/books.js"></script>
 </body>
 
 </html>
