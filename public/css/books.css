@@ -152,3 +152,11 @@
   background-color: inherit;
   cursor: pointer;
 }
+
+
+
+@media (max-width: 600px) {
+  .mobile-hide {
+    display: none;
+  }
+}

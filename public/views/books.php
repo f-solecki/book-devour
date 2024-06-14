@@ -91,9 +91,9 @@
       <div class="books-title">All available books</div>
       <table class="books-table" cellspacing="0" cellpadding="0">
         <tr class="list-row">
-          <th class="list-header">Title</th>
-          <th class="list-header">Author</th>
-          <th class="list-header">Category</th>
+          <th class="list-header ">Title</th>
+          <th class="list-header mobile-hide">Author</th>
+          <th class="list-header mobile-hide">Category</th>
           <th class="list-header"></th>
         </tr>
         <?php
@@ -109,8 +109,8 @@
         foreach ($booksWithoutLoans as $book) : ?>
           <tr class="list-row" data-book-id="<?= $book->getId() ?>">
             <td class="list-cell title-cell"><?= htmlspecialchars($book->getTitle()) ?></td>
-            <td class="list-cell"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></td>
-            <td class="list-cell"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></td>
+            <td class="list-cell mobile-hide"><?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getFirstName()) ?> <?= htmlspecialchars($authors[$book->getAuthorId() - 1]->getLastName()) ?></td>
+            <td class="list-cell mobile-hide"><?= htmlspecialchars($categories[$book->getCategoryId() - 1]->getName()) ?></td>
             <td class="action-cell">
               <a class="info-icon" style="margin-right:10px" href="book?id=<?= $book->getId() ?>"><img class="info-icon" src="public/assets/images/info.svg" alt="info" /></a>
               <button class="btn loan-book" data-book-id="<?= $book->getId() ?>">Loan book</button>
