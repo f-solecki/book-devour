@@ -96,5 +96,5 @@ Desktop | Mobile
 These pages allow users to create new account in the system, which is necessary for loaning books and using features that require authorization.
 Desktop | Mobile
 :-------------------------:|:-------------------------:
-![Registration View](demo_images/register.png) | ![Registration View](demo_images/register-mobile.jpg)
+![Registration View](demo_images/register.png) | ![Registration View](demo_images/register-mobile.png)
 
