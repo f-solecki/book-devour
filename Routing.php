@@ -1,8 +1,8 @@
 <?php
 
-require_once 'src/controllers/HomeController.php';
 require_once 'src/controllers/AuthController.php';
 require_once 'src/controllers/BookController.php';
+require_once 'src/controllers/UserController.php';
 
 class Router
 {

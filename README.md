@@ -98,3 +98,9 @@ Desktop | Mobile
 :-------------------------:|:-------------------------:
 ![Registration View](demo_images/register.png) | ![Registration View](demo_images/register-mobile.png)
 
+### Profile View
+These pages allow users to see account details and remove their account if they don't want to use our app anymore.
+Desktop | Mobile
+:-------------------------:|:-------------------------:
+![Profile View](demo_images/profile.png) | ![Profile View](demo_images/profile-mobile.png)
+

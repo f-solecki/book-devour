@@ -24,8 +24,11 @@
       <div class="profile">
         <i class="fas fa-user profile-icon" id="profile-icon"></i>
         <div class="dropdown-menu" id="dropdown-menu">
+          <a href="/profile" class="profile-link">
+            Profile
+          </a>
           <form action="/logout" method="POST" class="logout-form">
-            <button type="submit" class="logout-button text-xl">
+            <button type="submit" class="logout-button">
               Logout
             </button>
           </form>

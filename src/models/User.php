@@ -55,4 +55,9 @@ class User
   {
     return $this->isAdmin;
   }
+
+  public function getFullName()
+  {
+    return $this->firstName . ' ' . $this->lastName;
+  }
 }

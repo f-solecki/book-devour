@@ -23,4 +23,8 @@ Router::post('loan_book', 'BookController');
 Router::delete('return_book', 'BookController');
 Router::delete('delete_book', 'BookController');
 
+// Users
+Router::get('profile', 'UserController');
+Router::delete('remove_account', 'UserController');
+
 Router::run($path);

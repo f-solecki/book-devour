@@ -52,4 +52,30 @@ class UserRepository extends Repository
 
     return;
   }
+
+  public function removeUser($id)
+  {
+    $this->deleteUsersLoans($id);
+    $this->deleteUser($id);
+  }
+
+  private function deleteUsersLoans($id)
+  {
+    $query = $this->database->connect()->prepare('
+      DELETE FROM loans WHERE user_id = :id
+    ');
+
+    $query->bindParam(':id', $id, PDO::PARAM_INT);
+    $query->execute();
+  }
+
+  private function deleteUser($id)
+  {
+    $query = $this->database->connect()->prepare('
+      DELETE FROM users WHERE id = :id
+    ');
+
+    $query->bindParam(':id', $id, PDO::PARAM_INT);
+    $query->execute();
+  }
 }

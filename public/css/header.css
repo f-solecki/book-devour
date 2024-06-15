@@ -36,6 +36,20 @@
 
 }
 
+.profile-link{
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  font-size: 1.6rem;
+}
+
+.profile-link:hover{
+  background-color: #f0f0f0;
+}
+
 .dropdown-menu {
   display: none;
   position: absolute;
