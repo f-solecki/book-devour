@@ -1,3 +1,5 @@
+The project carried out for the classes of the course Introduction to Web Application Design carried out in the academic year 2023/24 for the credit of the course.
+
 # Book Devour
 
 Welcome to "Book Devour" - a simple and user-friendly library app designed to help you manage your personal book collection effortlessly. Whether you're a casual reader or a bibliophile, this app provides all the tools you need to organize, track, and explore your books.
